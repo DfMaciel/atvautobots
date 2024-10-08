@@ -5,55 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a4b3cd4e-375d-4b3e-8759-a922f7615dea" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/AutomanagerApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/controles/ClienteControle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/entidades/Cliente.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/entidades/Documento.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/entidades/Endereco.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/entidades/Telefone.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/modelo/ClienteAtualizador.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/modelo/ClienteSelecionador.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/modelo/DocumentoAtualizador.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/modelo/EnderecoAtualizador.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/modelo/StringVerificadorNulo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/modelo/TelefoneAtualizador.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/repositorios/ClienteRepositorio.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/automanager/src/test/java/com/autobots/automanager/AutomanagerApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/AutomanagerApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/controles/ClienteControle.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/entidades/Cliente.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/entidades/Documento.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/entidades/Endereco.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/entidades/Telefone.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/modelo/ClienteAtualizador.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/modelo/ClienteSelecionador.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/modelo/DocumentoAtualizador.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/modelo/EnderecoAtualizador.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/modelo/StringVerificadorNulo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/modelo/TelefoneAtualizador.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/java/com/autobots/automanager/repositorios/ClienteRepositorio.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/atvi-autobots-microservico-spring/automanager/src/test/java/com/autobots/automanager/AutomanagerApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/controles/ClienteControle.java" beforeDir="false" afterPath="$PROJECT_DIR$/automanager/src/main/java/com/autobots/automanager/controles/ClienteControle.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -67,23 +32,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Application.AutomanagerApplication.executor": "Run",
-    "Application.Unnamed.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "atv1",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/kmaci/OneDrive/Área de Trabalho/GitHub/atvautobots",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.keymap"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Application.AutomanagerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;atv1&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/kmaci/OneDrive/Área de Trabalho/GitHub/API-2024.2-Back-End&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\kmaci\OneDrive\Área de Trabalho\GitHub\atvautobots" />
