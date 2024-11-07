@@ -47,27 +47,52 @@ public class ClienteControle {
 	}
 
 	@GetMapping("/clientes")
-	public List<Cliente> obterClientes() {
+	public ResponseEntity<List<Cliente>> obterClientes() {
 		List<Cliente> clientes = repositorio.findAll();
-		return clientes;
+		if (clientes.isEmpty()) {
+			ResponseEntity<List<Cliente>> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return resposta;
+		} else {
+			adicionadorLink.adicionarLink(clientes);
+			ResponseEntity<List<Cliente>> resposta = new ResponseEntity<>(clientes, HttpStatus.FOUND);
+			return resposta;
+		}
 	}
 
 	@PostMapping("/cadastro")
-	public void cadastrarCliente(@RequestBody Cliente cliente) {
-		repositorio.save(cliente);
+	public ResponseEntity<?> cadastrarCliente(@RequestBody Cliente cliente) {
+		HttpStatus status = HttpStatus.CONFLICT;
+		if (cliente.getId() == null) {
+			repositorio.save(cliente);
+			status = HttpStatus.CREATED;
+		}
+		return new ResponseEntity<>(status);
+
 	}
 
 	@PutMapping("/atualizar")
-	public void atualizarCliente(@RequestBody Cliente atualizacao) {
+	public ResponseEntity<?> atualizarCliente(@RequestBody Cliente atualizacao) {
+		HttpStatus status = HttpStatus.CONFLICT;
 		Cliente cliente = repositorio.getById(atualizacao.getId());
-		ClienteAtualizador atualizador = new ClienteAtualizador();
-		atualizador.atualizar(cliente, atualizacao);
-		repositorio.save(cliente);
+		if (cliente != null) {
+			ClienteAtualizador atualizador = new ClienteAtualizador();
+			atualizador.atualizar(cliente, atualizacao);
+			repositorio.save(cliente);
+			status = HttpStatus.OK;
+		} else {
+			status = HttpStatus.BAD_REQUEST;
+		}
+		return new ResponseEntity<>(status);
 	}
 
 	@DeleteMapping("/excluir")
-	public void excluirCliente(@RequestBody Cliente exclusao) {
+	public ResponseEntity<?> excluirCliente(@RequestBody Cliente exclusao) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
 		Cliente cliente = repositorio.getById(exclusao.getId());
-		repositorio.delete(cliente);
+		if (cliente != null) {
+			repositorio.delete(cliente);
+			status = HttpStatus.OK;
+		}
+		return new ResponseEntity<>(status);
 	}
 }
