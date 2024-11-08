@@ -45,7 +45,6 @@ public class DocumentoControle {
             } else {
                 cadastrador.cadastrar(cliente, documentos);
                 repositorio.save(cliente);
-                adicionadorLink.adicionarLink(documentos);
                 status = HttpStatus.CREATED;
             }
             return new ResponseEntity<>(status);
@@ -102,7 +101,6 @@ public class DocumentoControle {
             } else {
                 atualizador.atualizar(cliente.getDocumentos(), documento);
                 repositorio.save(cliente);
-                adicionadorLinkCliente.adicionarLink(cliente);
                 status = HttpStatus.OK;
             }
             return new ResponseEntity<>(status);

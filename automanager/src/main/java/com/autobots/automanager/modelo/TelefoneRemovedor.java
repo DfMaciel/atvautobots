@@ -13,7 +13,7 @@ public class TelefoneRemovedor {
     public void excluir(Cliente cliente, Telefone telefone) {
         if (telefone != null) {
             if (!verificador.verificar(telefone.getDdd()) && !verificador.verificar(telefone.getNumero())) {
-                cliente.getDocumentos().remove(telefone);
+                cliente.getTelefones().remove(telefone);
             }
         }
     }
