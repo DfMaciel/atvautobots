@@ -46,16 +46,37 @@ public class EmpresaService {
             if (empresa.getTelefones() != null) {
                 empresaAtual.setTelefones(empresa.getTelefones());
             }
-            empresaAtual.setEndereco(empresa.getEndereco());
-            empresaAtual.setCadastro(empresa.getCadastro());
-            empresaAtual.setUsuarios(empresa.getUsuarios());
-            empresaAtual.setMercadorias(empresa.getMercadorias());
-            empresaAtual.setServicos(empresa.getServicos());
-            empresaAtual.setVendas(empresa.getVendas());
+            if (empresa.getEndereco() != null) {
+                empresaAtual.setEndereco(empresa.getEndereco());
+            }
+            if (empresa.getCadastro() != null) {
+                empresaAtual.setCadastro(empresa.getCadastro());
+            }
+            if (empresa.getUsuarios() != null) {
+                empresaAtual.setUsuarios(empresa.getUsuarios());
+            }
+            if (empresa.getMercadorias() != null) {
+                empresaAtual.setMercadorias(empresa.getMercadorias());
+            }
+            if (empresa.getServicos() != null) {
+                empresaAtual.setServicos(empresa.getServicos());
+            }
+            if (empresa.getVendas() != null) {
+                empresaAtual.setVendas(empresa.getVendas());
+            }
             repositorioEmpresa.save(empresa);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    public void deletarEmpresa(Long id) {
+        List<Empresa> empresas = repositorioEmpresa.findAll();
+        try {
+            repositorioEmpresa.findById(id).orElseThrow(() -> new IllegalArgumentException("Empresa não encontrada"));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Empresa não encontrada");
         }
     }
 }

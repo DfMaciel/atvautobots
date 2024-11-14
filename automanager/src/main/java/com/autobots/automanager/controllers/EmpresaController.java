@@ -49,5 +49,15 @@ public class EmpresaController {
         ResponseEntity<?> resposta = empresaService.atualizarEmpresa(id, empresa);
         return resposta;
     }
+
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<?> deletarEmpresa(@PathVariable Long id) {
+        try {
+            empresaService.deletarEmpresa(id);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }
 

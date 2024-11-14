@@ -4,9 +4,11 @@ import com.autobots.automanager.controllers.EmpresaController;
 import com.autobots.automanager.entitades.Empresa;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class AdicionadorLinkEmpresa implements AdicionadorLink<Empresa> {
 
     @Override
@@ -16,7 +18,7 @@ public class AdicionadorLinkEmpresa implements AdicionadorLink<Empresa> {
             Link linkProprio = WebMvcLinkBuilder
                     .linkTo(WebMvcLinkBuilder
                             .methodOn(EmpresaController.class)
-                            .obterCliente(id))
+                            .visualizarEmpresa(id))
                     .withSelfRel();
             empresa.add(linkProprio);
         }
@@ -28,7 +30,7 @@ public class AdicionadorLinkEmpresa implements AdicionadorLink<Empresa> {
                 .linkTo(WebMvcLinkBuilder
                         .methodOn(EmpresaController.class)
                         .listarEmpresas())
-                .withRel("clientes");
+                .withRel("empresas");
         objeto.add(linkProprio);
     }
 }
