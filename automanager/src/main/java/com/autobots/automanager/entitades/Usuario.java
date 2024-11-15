@@ -2,11 +2,8 @@ package com.autobots.automanager.entitades;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.*;
-
 import com.autobots.automanager.enumeracoes.PerfilUsuario;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

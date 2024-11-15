@@ -1,11 +1,6 @@
 package com.autobots.automanager.entitades;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import javax.persistence.*;
 import lombok.Data;
 
 @Data
@@ -26,6 +21,6 @@ public class Endereco {
 	private String numero;
 	@Column(nullable = false)
 	private String codigoPostal;
-	@Column()
+	@Column
 	private String informacoesAdicionais;
 }

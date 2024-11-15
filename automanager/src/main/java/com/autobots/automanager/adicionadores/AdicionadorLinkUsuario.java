@@ -4,9 +4,11 @@ import com.autobots.automanager.controllers.UsuarioController;
 import com.autobots.automanager.entitades.Usuario;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class AdicionadorLinkUsuario implements AdicionadorLink<Usuario> {
 
     @Override

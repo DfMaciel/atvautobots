@@ -1,9 +1,7 @@
 package com.autobots.automanager.entitades;
 
 import java.util.*;
-
 import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;

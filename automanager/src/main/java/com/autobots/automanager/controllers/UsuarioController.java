@@ -34,7 +34,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> cadastrarUsuario(@RequestBody List<Usuario> usuario) {
         try {
             usuarioService.cadastrarUsuario(usuario);
             return ResponseEntity.created(null).build();
