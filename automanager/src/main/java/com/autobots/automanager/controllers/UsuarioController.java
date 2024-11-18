@@ -34,7 +34,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarUsuario(@RequestBody List<Usuario> usuario) {
+    public ResponseEntity<?> cadastrarUsuario(@RequestBody UsuarioDto usuario) {
         try {
             usuarioService.cadastrarUsuario(usuario);
             return ResponseEntity.created(null).build();
@@ -44,7 +44,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/cadastrar/empresa/{idEmpresa}")
-    public ResponseEntity<?> cadastrarUsuarioEmpresa(@RequestBody Usuario usuario, @PathVariable Long idEmpresa) {
+    public ResponseEntity<?> cadastrarUsuarioEmpresa(@RequestBody UsuarioDto usuario, @PathVariable Long idEmpresa) {
         try {
             usuarioService.cadastrarUsuarioEmpresa(usuario, idEmpresa);
             return ResponseEntity.created(null).build();
@@ -64,7 +64,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
+    public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @RequestBody AtualizarUsuarioDto usuario) {
         ResponseEntity<?> resposta = usuarioService.atualizarUsuario(id, usuario);
         return resposta;
     }

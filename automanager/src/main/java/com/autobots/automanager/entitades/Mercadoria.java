@@ -23,6 +23,6 @@ public class Mercadoria extends RepresentationModel<Mercadoria> {
 	private long quantidade;
 	@Column(nullable = false)
 	private double valor;
-	@Column
+	@Column()
 	private String descricao;
 }

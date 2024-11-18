@@ -54,7 +54,7 @@ public class MercadoriaController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarMercadoria(@RequestBody List<Mercadoria> mercadoria) {
+    public ResponseEntity<?> cadastrarMercadoria(@RequestBody Mercadoria mercadoria) {
         try {
             mercadoriaService.cadastrarMercadoria(mercadoria);
             return ResponseEntity.created(null).build();

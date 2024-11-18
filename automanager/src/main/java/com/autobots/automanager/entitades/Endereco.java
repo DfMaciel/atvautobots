@@ -21,6 +21,6 @@ public class Endereco {
 	private String numero;
 	@Column(nullable = false)
 	private String codigoPostal;
-	@Column
+	@Column()
 	private String informacoesAdicionais;
 }

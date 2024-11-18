@@ -1,15 +1,19 @@
 package com.autobots.automanager.services;
 
 import com.autobots.automanager.adicionadores.AdicionadorLinkUsuario;
-import com.autobots.automanager.entitades.Empresa;
-import com.autobots.automanager.entitades.Usuario;
-import com.autobots.automanager.entitades.Veiculo;
-import com.autobots.automanager.entitades.Venda;
+import com.autobots.automanager.controllers.AtualizarUsuarioDto;
+import com.autobots.automanager.controllers.UsuarioDto;
+import com.autobots.automanager.entitades.*;
 import com.autobots.automanager.repositorios.*;
+import com.autobots.automanager.utilitarios.AtualizadorDocumento;
+import com.autobots.automanager.utilitarios.AtualizadorEmail;
+import com.autobots.automanager.utilitarios.AtualizadorTelefone;
+import com.autobots.automanager.utilitarios.CadastradorUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.Document;
 import java.util.List;
 
 @Service
@@ -30,6 +34,18 @@ public class UsuarioService {
     @Autowired
     private RepositorioVeiculo repositorioVeiculo;
 
+    @Autowired
+    private CadastradorUsuario CadastradorUsuario;
+
+    @Autowired
+    private AtualizadorDocumento atualizadorDocumento;
+
+    @Autowired
+    private AtualizadorTelefone atualizadorTelefone;
+
+    @Autowired
+    private AtualizadorEmail atualizadorEmail;
+
     public List<Usuario> listarUsuarios() {
         List<Usuario> usuarios = repositorioUsuario.findAll();
         adicionadorLinkUsuario.adicionarLink(usuarios);
@@ -44,24 +60,19 @@ public class UsuarioService {
         return usuario;
     }
 
-    public Usuario cadastrarUsuario(Usuario usuario) {
-        Usuario usuarioCadastrado = repositorioUsuario.save(usuario);
-        return usuarioCadastrado;
+    public void cadastrarUsuario(UsuarioDto usuario) {
+        Usuario usuarioCadastrado = CadastradorUsuario.cadastrarUsuario(usuario);
+        repositorioUsuario.save(usuarioCadastrado);
     }
 
-    public void cadastrarUsuario(List<Usuario> usuarios) {
-        for (Usuario usuario : usuarios) {
-            Usuario usuarioCadastrado = cadastrarUsuario(usuario);
-        }
-    }
-
-    public void cadastrarUsuarioEmpresa(Usuario usuario, Long idEmpresa) {
+    public void cadastrarUsuarioEmpresa(UsuarioDto usuario, Long idEmpresa) {
         Empresa empresa = repositorioEmpresa.findById(idEmpresa).orElse(null);
         if (empresa == null) {
             throw new IllegalArgumentException("Empresa não encontrada");
         }
-        Usuario usuarioCadastrado = repositorioUsuario.save(usuario);
-        empresa.getUsuarios().add(usuarioCadastrado);
+        Usuario usuarioCadastrado = CadastradorUsuario.cadastrarUsuario(usuario);
+        Usuario usuarioSalvo = repositorioUsuario.save(usuarioCadastrado);
+        empresa.getUsuarios().add(usuarioSalvo);
         repositorioEmpresa.save(empresa);
     }
 
@@ -78,41 +89,59 @@ public class UsuarioService {
         repositorioEmpresa.save(empresa);
     }
 
-    public ResponseEntity<?> atualizarUsuario(Long id, Usuario usuario) {
+    public ResponseEntity<?> atualizarUsuario(Long id, AtualizarUsuarioDto usuario) {
         Usuario usuarioAtual = repositorioUsuario.findById(id).orElse(null);
         if (usuarioAtual != null) {
-            if (usuario.getNome() != null) {
-                usuarioAtual.setNome(usuario.getNome());
+            if (usuario.nome().isPresent()) {
+                usuarioAtual.setNome(String.valueOf(usuario.nome()));
             }
-            if (usuario.getNomeSocial() != null) {
-                usuarioAtual.setNomeSocial(usuario.getNomeSocial());
+            if (usuario.nomeSocial().isPresent()) {
+                usuarioAtual.setNomeSocial(String.valueOf(usuario.nomeSocial()));
             }
-            if (usuario.getPerfis() != null) {
-                usuarioAtual.setPerfis(usuario.getPerfis());
+            if (usuario.perfis().isPresent()) {
+                usuarioAtual.setPerfis(usuario.perfis().get());
             }
-            if (usuario.getTelefones() != null) {
-                usuarioAtual.setTelefones(usuario.getTelefones());
+            if (usuario.telefones().isPresent()) {
+                for (Telefone telefone : usuario.telefones().get()) {
+                    for (Telefone telefoneAtual : usuarioAtual.getTelefones()) {
+                        if (telefone.getId().equals(telefoneAtual.getId())) {
+                            atualizadorTelefone.atualizarTelefone(telefoneAtual, telefone);
+                        }
+                    }
+                }
             }
-            if (usuario.getEndereco() != null) {
-                usuarioAtual.setEndereco(usuario.getEndereco());
+            if (usuario.endereco().isPresent()) {
+                usuarioAtual.setEndereco(usuario.endereco().get());
             }
-            if (usuario.getDocumentos() != null) {
-                usuarioAtual.setDocumentos(usuario.getDocumentos());
+            if (usuario.documentos().isPresent()) {
+                for (Documento documento : usuario.documentos().get()) {
+                    for (Documento documentoAtual : usuarioAtual.getDocumentos()) {
+                        if (documento.getId().equals(documentoAtual.getId())) {
+                            atualizadorDocumento.atualizarDocumento(documentoAtual, documento);
+                        }
+                    }
+                }
             }
-            if (usuario.getEmails() != null) {
-                usuarioAtual.setEmails(usuario.getEmails());
+            if (usuario.emails().isPresent()) {
+                for (Email email : usuario.emails().get()) {
+                    for (Email emailAtual : usuarioAtual.getEmails()) {
+                        if (email.getId().equals(emailAtual.getId())) {
+                            atualizadorEmail.atualizarEmail(emailAtual, email);
+                        }
+                    }
+                }
             }
-            if (usuario.getCredenciais() != null) {
-                usuarioAtual.setCredenciais(usuario.getCredenciais());
+            if (usuario.credenciais().isPresent()) {
+                usuarioAtual.getCredenciais().addAll(usuario.credenciais().get());
             }
-            if (usuario.getMercadorias() != null) {
-                usuarioAtual.setMercadorias(usuario.getMercadorias());
+            if (usuario.mercadorias().isPresent()) {
+                usuarioAtual.getMercadorias().addAll(usuario.mercadorias().get());
             }
-            if (usuario.getVendas() != null) {
-                usuarioAtual.setVendas(usuario.getVendas());
+            if (usuario.vendas().isPresent()) {
+                usuarioAtual.getVendas().addAll(usuario.vendas().get());
             }
-            if (usuario.getVeiculos() != null) {
-                usuarioAtual.setVeiculos(usuario.getVeiculos());
+            if (usuario.veiculos().isPresent()) {
+                usuarioAtual.getVeiculos().addAll(usuario.veiculos().get());
             }
             repositorioUsuario.save(usuarioAtual);
             return ResponseEntity.ok().build();

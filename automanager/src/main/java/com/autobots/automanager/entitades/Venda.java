@@ -11,7 +11,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Data
 @EqualsAndHashCode(exclude = { "cliente", "funcionario", "veiculo" }, callSuper=false)
 @Entity
-public class Venda extends RepresentationModel<Venda> {
+public class Venda extends RepresentationModel<Venda>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -20,18 +20,16 @@ public class Venda extends RepresentationModel<Venda> {
 	@Column(nullable = false, unique = true)
 	private String identificacao;
 	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
-	@JsonIgnoreProperties(value = { "vendas" })
+	@JsonIgnoreProperties(value = { "credenciais", "mercadorias", "vendas", "veiculos" })
 	private Usuario cliente;
 	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
-	@JsonIgnoreProperties(value = { "vendas" })
+	@JsonIgnoreProperties(value = { "credenciais", "mercadorias", "vendas", "veiculos" })
 	private Usuario funcionario;
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
-	@JsonManagedReference
-	private List<Mercadoria> mercadorias = new ArrayList<>();
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
-	@JsonManagedReference
-	private List<Servico> servicos = new ArrayList<>();
+	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+	private Set<Mercadoria> mercadorias = new HashSet<>();
+	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+	private Set<Servico> servicos = new HashSet<>();
 	@OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
-	@JsonIgnoreProperties(value = { "vendas", "proprietario" })
+	@JsonIgnoreProperties(value = { "proprietario" , "vendas" })
 	private Veiculo veiculo;
 }

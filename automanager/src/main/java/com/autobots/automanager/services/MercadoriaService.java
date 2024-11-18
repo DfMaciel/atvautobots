@@ -9,6 +9,7 @@ import com.autobots.automanager.repositorios.RepositorioEmpresa;
 import com.autobots.automanager.repositorios.RepositorioMercadoria;
 import com.autobots.automanager.repositorios.RepositorioUsuario;
 import com.autobots.automanager.repositorios.RepositorioVenda;
+import com.autobots.automanager.utilitarios.CadastradorMercadoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,9 @@ public class MercadoriaService {
 
     @Autowired
     private RepositorioVenda repositorioVenda;
+
+    @Autowired
+    private CadastradorMercadoria cadastradorMercadoria;
 
     public List<Mercadoria> listarMercadorias() {
         List<Mercadoria> mercadorias = repositorioMercadoria.findAll();
@@ -65,15 +69,9 @@ public class MercadoriaService {
         return mercadorias;
     }
 
-    public Mercadoria cadastrarMercadoria(Mercadoria mercadoria) {
-        Mercadoria mercadoriaCadastrada = repositorioMercadoria.save(mercadoria);
-        return mercadoriaCadastrada;
-    }
-
-    public void cadastrarMercadoria(List<Mercadoria> mercadorias) {
-        for (Mercadoria mercadoria : mercadorias) {
-            Mercadoria mercadoriaCadastrada = cadastrarMercadoria(mercadoria);
-        }
+    public void cadastrarMercadoria(Mercadoria mercadoria) {
+        Mercadoria mercadoriaCadastrada = cadastradorMercadoria.cadastrarMercadoria(mercadoria);
+        repositorioMercadoria.save(mercadoriaCadastrada);
     }
 
     public void cadastrarMercadoriaEmpresa(Mercadoria mercadoria, Long idEmpresa) {
