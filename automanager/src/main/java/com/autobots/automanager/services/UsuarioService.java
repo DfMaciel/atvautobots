@@ -93,10 +93,10 @@ public class UsuarioService {
         Usuario usuarioAtual = repositorioUsuario.findById(id).orElse(null);
         if (usuarioAtual != null) {
             if (usuario.nome().isPresent()) {
-                usuarioAtual.setNome(String.valueOf(usuario.nome()));
+                usuarioAtual.setNome(usuario.nome().get());
             }
             if (usuario.nomeSocial().isPresent()) {
-                usuarioAtual.setNomeSocial(String.valueOf(usuario.nomeSocial()));
+                usuarioAtual.setNomeSocial(usuario.nomeSocial().get());
             }
             if (usuario.perfis().isPresent()) {
                 usuarioAtual.setPerfis(usuario.perfis().get());
