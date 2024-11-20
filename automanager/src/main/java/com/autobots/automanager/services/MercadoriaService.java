@@ -2,10 +2,7 @@ package com.autobots.automanager.services;
 
 import com.autobots.automanager.adicionadores.AdicionadorLinkMercadoria;
 import com.autobots.automanager.controllers.MercadoriaDto;
-import com.autobots.automanager.entitades.Empresa;
-import com.autobots.automanager.entitades.Mercadoria;
-import com.autobots.automanager.entitades.Usuario;
-import com.autobots.automanager.entitades.Venda;
+import com.autobots.automanager.entitades.*;
 import com.autobots.automanager.repositorios.RepositorioEmpresa;
 import com.autobots.automanager.repositorios.RepositorioMercadoria;
 import com.autobots.automanager.repositorios.RepositorioUsuario;
@@ -14,6 +11,7 @@ import com.autobots.automanager.utilitarios.CadastradorMercadoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -52,22 +50,26 @@ public class MercadoriaService {
         return mercadoria;
     }
 
-    public Set<Mercadoria> visualizarMercadoriaEmpresa(Long idEmpresa) {
+    public List<Mercadoria> visualizarMercadoriaEmpresa(Long idEmpresa) {
         Empresa empresa = repositorioEmpresa.findById(idEmpresa).orElse(null);
         if (empresa == null) {
             throw new IllegalArgumentException("Empresa não encontrada");
         }
         Set<Mercadoria> mercadorias = empresa.getMercadorias();
-        return mercadorias;
+        List<Mercadoria> mercadoriasLista = new ArrayList<>(mercadorias);
+        adicionadorLinkMercadoria.adicionarLink(mercadoriasLista);
+        return mercadoriasLista;
     }
 
-    public Set<Mercadoria> visualizarMercadoriaUsuario(Long idUsuario) {
+    public List<Mercadoria> visualizarMercadoriaUsuario(Long idUsuario) {
         Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuario não encontrado");
         }
         Set<Mercadoria> mercadorias = usuario.getMercadorias();
-        return mercadorias;
+        List<Mercadoria> mercadoriasLista = new ArrayList<>(mercadorias);
+        adicionadorLinkMercadoria.adicionarLink(mercadoriasLista);
+        return mercadoriasLista;
     }
 
     public void cadastrarMercadoria(MercadoriaDto mercadoria) {
@@ -124,6 +126,58 @@ public class MercadoriaService {
         }
 
         repositorioMercadoria.save(mercadoriaAtual);
+    }
+
+    public void vincularMercadoriaEmpresa(Long idMercadoria, Long idEmpresa) {
+        Mercadoria mercadoria = repositorioMercadoria.findById(idMercadoria).orElse(null);
+        Empresa empresa = repositorioEmpresa.findById(idEmpresa).orElse(null);
+        if (mercadoria == null) {
+            throw new IllegalArgumentException("Mercadoria não encontrada");
+        }
+        if (empresa == null) {
+            throw new IllegalArgumentException("Empresa não encontrada");
+        }
+        empresa.getMercadorias().add(mercadoria);
+        repositorioEmpresa.save(empresa);
+    }
+
+    public void vincularMercadoriaUsuario(Long idMercadoria, Long idUsuario) {
+        Mercadoria mercadoria = repositorioMercadoria.findById(idMercadoria).orElse(null);
+        Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
+        if (mercadoria == null) {
+            throw new IllegalArgumentException("Mercadoria não encontrada");
+        }
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuario não encontrado");
+        }
+        usuario.getMercadorias().add(mercadoria);
+        repositorioUsuario.save(usuario);
+    }
+
+    public void desvincularMercadoriaEmpresa(Long idMercadoria, Long idEmpresa) {
+        Mercadoria mercadoria = repositorioMercadoria.findById(idMercadoria).orElse(null);
+        Empresa empresa = repositorioEmpresa.findById(idEmpresa).orElse(null);
+        if (mercadoria == null) {
+            throw new IllegalArgumentException("Mercadoria não encontrada");
+        }
+        if (empresa == null) {
+            throw new IllegalArgumentException("Empresa não encontrada");
+        }
+        empresa.getMercadorias().remove(mercadoria);
+        repositorioEmpresa.save(empresa);
+    }
+
+    public void desvincularMercadoriaUsuario(Long idMercadoria, Long idUsuario) {
+        Mercadoria mercadoria = repositorioMercadoria.findById(idMercadoria).orElse(null);
+        Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
+        if (mercadoria == null) {
+            throw new IllegalArgumentException("Mercadoria não encontrada");
+        }
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuario não encontrado");
+        }
+        usuario.getMercadorias().remove(mercadoria);
+        repositorioUsuario.save(usuario);
     }
 
     public void deletarMercadoria(Long id) {

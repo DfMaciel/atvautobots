@@ -34,6 +34,15 @@ public class VeiculoController {
         return ResponseEntity.ok(veiculo);
     }
 
+    @GetMapping("/usuario/{idUsuario}/listar")
+    public ResponseEntity<List<Veiculo>> listarVeiculosUsuario(@PathVariable Long idUsuario) {
+        List<Veiculo> veiculos = veiculoService.listarVeiculosUsuario(idUsuario);
+        if (veiculos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(veiculos);
+    }
+
     @PostMapping("/cadastrar")
     public ResponseEntity<?> cadastrarVeiculo(@RequestBody Veiculo veiculo) {
         try {

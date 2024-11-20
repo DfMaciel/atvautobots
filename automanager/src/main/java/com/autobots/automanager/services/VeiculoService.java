@@ -1,6 +1,7 @@
 package com.autobots.automanager.services;
 
 import com.autobots.automanager.adicionadores.AdicionadorLinkVeiculo;
+import com.autobots.automanager.entitades.Credencial;
 import com.autobots.automanager.entitades.Usuario;
 import com.autobots.automanager.entitades.Veiculo;
 import com.autobots.automanager.entitades.Venda;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class VeiculoService {
@@ -44,6 +47,17 @@ public class VeiculoService {
             adicionadorLinkVeiculo.adicionarLink(veiculo);
         }
         return veiculo;
+    }
+
+    public List<Veiculo> listarVeiculosUsuario(Long idUsuario) {
+        Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário não encontrado.");
+        }
+        Set<Veiculo> veiculos = usuario.getVeiculos();
+        List<Veiculo> veiculosLista = new ArrayList<>(veiculos);
+        adicionadorLinkVeiculo.adicionarLink(veiculosLista);
+        return veiculosLista;
     }
 
     public ResponseEntity<?> cadastrarVeiculo(Veiculo veiculo) {

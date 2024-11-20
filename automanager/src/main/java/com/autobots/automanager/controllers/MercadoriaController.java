@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/mercadoria")
@@ -36,8 +35,8 @@ public class MercadoriaController {
     }
 
     @GetMapping("/visualizar/empresa/{idEmpresa}")
-    public ResponseEntity<Set<Mercadoria>> visualizarMercadoriaEmpresa(@PathVariable Long idEmpresa) {
-        Set<Mercadoria> mercadorias = mercadoriaService.visualizarMercadoriaEmpresa(idEmpresa);
+    public ResponseEntity<List<Mercadoria>> visualizarMercadoriaEmpresa(@PathVariable Long idEmpresa) {
+        List<Mercadoria> mercadorias = mercadoriaService.visualizarMercadoriaEmpresa(idEmpresa);
         if (mercadorias.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -45,8 +44,8 @@ public class MercadoriaController {
     }
 
     @GetMapping("/visualizar/usuario/{idUsuario}")
-    public ResponseEntity<Set<Mercadoria>> visualizarMercadoriaUsuario(@PathVariable Long idUsuario) {
-        Set<Mercadoria> mercadorias = mercadoriaService.visualizarMercadoriaUsuario(idUsuario);
+    public ResponseEntity<List<Mercadoria>> visualizarMercadoriaUsuario(@PathVariable Long idUsuario) {
+        List<Mercadoria> mercadorias = mercadoriaService.visualizarMercadoriaUsuario(idUsuario);
         if (mercadorias.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -87,6 +86,46 @@ public class MercadoriaController {
     public ResponseEntity<?> atualizarMercadoria(@PathVariable Long id, @RequestBody Mercadoria mercadoria) {
         try {
             mercadoriaService.atualizarMercadoria(id, mercadoria);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/vincular/{idMercadoria}/empresa/{idEmpresa}")
+    public ResponseEntity<?> vincularMercadoriaEmpresa(@PathVariable Long idMercadoria, @PathVariable Long idEmpresa) {
+        try {
+            mercadoriaService.vincularMercadoriaEmpresa(idMercadoria, idEmpresa);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/vincular/{idMercadoria}/usuario/{idUsuario}")
+    public ResponseEntity<?> vincularMercadoriaUsuario(@PathVariable Long idMercadoria, @PathVariable Long idUsuario) {
+        try {
+            mercadoriaService.vincularMercadoriaUsuario(idMercadoria, idUsuario);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/desvincular/{idMercadoria}/empresa/{idEmpresa}")
+    public ResponseEntity<?> desvincularMercadoriaEmpresa(@PathVariable Long idMercadoria, @PathVariable Long idEmpresa) {
+        try {
+            mercadoriaService.desvincularMercadoriaEmpresa(idMercadoria, idEmpresa);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/desvincular/{idMercadoria}/usuario/{idUsuario}")
+    public ResponseEntity<?> desvincularMercadoriaUsuario(@PathVariable Long idMercadoria, @PathVariable Long idUsuario) {
+        try {
+            mercadoriaService.desvincularMercadoriaUsuario(idMercadoria, idUsuario);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
