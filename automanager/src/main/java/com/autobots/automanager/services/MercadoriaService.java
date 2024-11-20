@@ -1,6 +1,7 @@
 package com.autobots.automanager.services;
 
 import com.autobots.automanager.adicionadores.AdicionadorLinkMercadoria;
+import com.autobots.automanager.controllers.MercadoriaDto;
 import com.autobots.automanager.entitades.Empresa;
 import com.autobots.automanager.entitades.Mercadoria;
 import com.autobots.automanager.entitades.Usuario;
@@ -69,27 +70,29 @@ public class MercadoriaService {
         return mercadorias;
     }
 
-    public void cadastrarMercadoria(Mercadoria mercadoria) {
+    public void cadastrarMercadoria(MercadoriaDto mercadoria) {
         Mercadoria mercadoriaCadastrada = cadastradorMercadoria.cadastrarMercadoria(mercadoria);
         repositorioMercadoria.save(mercadoriaCadastrada);
     }
 
-    public void cadastrarMercadoriaEmpresa(Mercadoria mercadoria, Long idEmpresa) {
+    public void cadastrarMercadoriaEmpresa(MercadoriaDto mercadoria, Long idEmpresa) {
         Empresa empresa = repositorioEmpresa.findById(idEmpresa).orElse(null);
         if (empresa == null) {
             throw new IllegalArgumentException("Empresa não encontrada");
         }
-        Mercadoria mercadoriaCadastrada = repositorioMercadoria.save(mercadoria);
+        Mercadoria mercadoriaCadastrada = cadastradorMercadoria.cadastrarMercadoria(mercadoria);
+        repositorioMercadoria.save(mercadoriaCadastrada);
         empresa.getMercadorias().add(mercadoriaCadastrada);
         repositorioEmpresa.save(empresa);
     }
 
-    public void cadastrarMercadoriaUsuario(Mercadoria mercadoria, Long idUsuario) {
+    public void cadastrarMercadoriaUsuario(MercadoriaDto mercadoria, Long idUsuario) {
         Usuario usuario  = repositorioUsuario.findById(idUsuario).orElse(null);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuario não encontrado");
         }
-        Mercadoria mercadoriaCadastrada = repositorioMercadoria.save(mercadoria);
+        Mercadoria mercadoriaCadastrada = cadastradorMercadoria.cadastrarMercadoria(mercadoria);
+        repositorioMercadoria.save(mercadoriaCadastrada);
         usuario.getMercadorias().add(mercadoriaCadastrada);
         repositorioUsuario.save(usuario);
     }

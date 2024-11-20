@@ -63,6 +63,16 @@ public class UsuarioController {
         }
     }
 
+    @PutMapping("/desvincular/{idUsuario}/empresa/{idEmpresa}")
+    public ResponseEntity<?> desvincularUsuarioEmpresa(@PathVariable Long idUsuario, @PathVariable Long idEmpresa) {
+        try {
+            usuarioService.desvincularUsuarioEmpresa(idUsuario, idEmpresa);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @RequestBody AtualizarUsuarioDto usuario) {
         ResponseEntity<?> resposta = usuarioService.atualizarUsuario(id, usuario);

@@ -94,6 +94,23 @@ public class VeiculoService {
         }
     }
 
+    public ResponseEntity<?> desvincularVeiculoUsuario(Long veiculoId, Long usuarioId) {
+        Veiculo veiculo = repositorioVeiculo.findById(veiculoId).orElse(null);
+        if (veiculo != null) {
+            Usuario usuario = repositorioUsuario.findById(usuarioId).orElse(null);
+            if (usuario == null) {
+                return ResponseEntity.notFound().build();
+            }
+            veiculo.setProprietario(null);
+            repositorioVeiculo.save(veiculo);
+            usuario.getVeiculos().remove(veiculo);
+            repositorioUsuario.save(usuario);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     public ResponseEntity<?> excluirVeiculo(Long id) {
         Veiculo veiculo = repositorioVeiculo.findById(id).orElse(null);
         if (veiculo != null) {

@@ -89,6 +89,19 @@ public class UsuarioService {
         repositorioEmpresa.save(empresa);
     }
 
+    public void desvincularUsuarioEmpresa(Long idUsuario, Long idEmpresa) {
+        Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário não encontrado");
+        }
+        Empresa empresa = repositorioEmpresa.findById(idEmpresa).orElse(null);
+        if (empresa == null) {
+            throw new IllegalArgumentException("Empresa não encontrada");
+        }
+        empresa.getUsuarios().remove(usuario);
+        repositorioEmpresa.save(empresa);
+    }
+
     public ResponseEntity<?> atualizarUsuario(Long id, AtualizarUsuarioDto usuario) {
         Usuario usuarioAtual = repositorioUsuario.findById(id).orElse(null);
         if (usuarioAtual != null) {

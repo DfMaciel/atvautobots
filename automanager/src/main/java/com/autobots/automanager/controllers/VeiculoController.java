@@ -64,7 +64,17 @@ public class VeiculoController {
         }
     }
 
-    @DeleteMapping("/excluir/{id}")
+    @PutMapping("/desvincular/{idVeiculo}/usuario/{idUsuario}")
+    public ResponseEntity<?> desvincularVeiculoUsuario(@PathVariable Long idVeiculo, @PathVariable Long idUsuario) {
+        try {
+            veiculoService.desvincularVeiculoUsuario(idVeiculo, idUsuario);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> excluirVeiculo(@PathVariable Long id) {
         try {
             ResponseEntity<?> resposta = veiculoService.excluirVeiculo(id);

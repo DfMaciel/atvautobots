@@ -54,7 +54,7 @@ public class MercadoriaController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarMercadoria(@RequestBody Mercadoria mercadoria) {
+    public ResponseEntity<?> cadastrarMercadoria(@RequestBody MercadoriaDto mercadoria) {
         try {
             mercadoriaService.cadastrarMercadoria(mercadoria);
             return ResponseEntity.created(null).build();
@@ -64,7 +64,7 @@ public class MercadoriaController {
     }
 
     @PostMapping("/cadastrar/empresa/{idEmpresa}")
-    public ResponseEntity<?> cadastrarMercadoriaEmpresa(@RequestBody Mercadoria mercadoria, @PathVariable Long idEmpresa) {
+    public ResponseEntity<?> cadastrarMercadoriaEmpresa(@RequestBody MercadoriaDto mercadoria, @PathVariable Long idEmpresa) {
         try {
             mercadoriaService.cadastrarMercadoriaEmpresa(mercadoria, idEmpresa);
             return ResponseEntity.created(null).build();
@@ -74,7 +74,7 @@ public class MercadoriaController {
     }
 
     @PostMapping("/cadastrar/usuario/{idUsuario}")
-    public ResponseEntity<?> cadastrarMercadoriaUsuario(@RequestBody Mercadoria mercadoria, @PathVariable Long idUsuario) {
+    public ResponseEntity<?> cadastrarMercadoriaUsuario(@RequestBody MercadoriaDto mercadoria, @PathVariable Long idUsuario) {
         try {
             mercadoriaService.cadastrarMercadoriaUsuario(mercadoria, idUsuario);
             return ResponseEntity.created(null).build();
