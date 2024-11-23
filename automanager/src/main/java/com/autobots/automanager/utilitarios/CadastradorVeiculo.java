@@ -9,8 +9,6 @@ import com.autobots.automanager.repositorios.RepositorioVenda;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
 @Component
 public class CadastradorVeiculo {
 
@@ -42,7 +40,7 @@ public class CadastradorVeiculo {
         }
         if (veiculo.getVendas() != null) {
             for (Venda venda : veiculo.getVendas()) {
-                Venda vendaAtual = cadastradorVenda.cadastradorVenda(venda);
+                Venda vendaAtual = cadastradorVenda.cadastrarVenda(venda);
                 vendaAtual.setVeiculo(veiculoCadastrado);
                 veiculoCadastrado.getVendas().add(vendaAtual);
             }

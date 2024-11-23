@@ -11,4 +11,7 @@ public class Email {
 	private Long id;
 	@Column(nullable = false)
 	private String endereco;
+
+	public Email() {
+	}
 }

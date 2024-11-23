@@ -3,6 +3,7 @@ package com.autobots.automanager.utilitarios;
 import com.autobots.automanager.controllers.MercadoriaDto;
 import com.autobots.automanager.entitades.Mercadoria;
 import com.autobots.automanager.entitades.Servico;
+import com.autobots.automanager.entitades.Usuario;
 import com.autobots.automanager.entitades.Venda;
 import com.autobots.automanager.repositorios.RepositorioMercadoria;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,20 @@ public class CadastradorVenda {
     private
     RepositorioMercadoria repositorioMercadoria;
 
-    public Venda cadastradorVenda (Venda venda) {
+    @Autowired
+    private CadastradorUsuario cadastradorUsuario;
+
+    public Venda cadastrarVenda(Venda venda) {
         Venda vendaCadastrada = new Venda();
         vendaCadastrada.setCadastro(new Date());
         vendaCadastrada.setIdentificacao(venda.getIdentificacao());
         if (venda.getCliente() != null) {
-            vendaCadastrada.setCliente(venda.getCliente());
+            Usuario cliente = cadastradorUsuario.cadastrarUsuario(venda.getCliente());
+            vendaCadastrada.setCliente(cliente);
         }
         if (venda.getFuncionario() != null) {
-            vendaCadastrada.setFuncionario(venda.getFuncionario());
+            Usuario funcionario = cadastradorUsuario.cadastrarUsuario(venda.getFuncionario());
+            vendaCadastrada.setFuncionario(funcionario);
         }
         if (venda.getMercadorias() != null) {
             for (Mercadoria mercadoria : venda.getMercadorias()) {

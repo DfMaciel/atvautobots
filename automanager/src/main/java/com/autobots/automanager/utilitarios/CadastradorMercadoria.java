@@ -22,4 +22,19 @@ public class CadastradorMercadoria {
 
         return mercadoriaCadastrada;
     }
+
+    public Mercadoria cadastrarMercadoria (Mercadoria mercadoria) {
+        Mercadoria mercadoriaCadastrada = new Mercadoria();
+        mercadoriaCadastrada.setValidade(new Date());
+        mercadoriaCadastrada.setFabricao(new Date());
+        mercadoriaCadastrada.setCadastro(new Date());
+        mercadoriaCadastrada.setNome(mercadoria.getNome());
+        mercadoriaCadastrada.setQuantidade(mercadoria.getQuantidade());
+        mercadoriaCadastrada.setValor(mercadoria.getValor());
+        if (mercadoria.getDescricao() != null) {
+            mercadoriaCadastrada.setDescricao(mercadoria.getDescricao());
+        }
+
+        return mercadoriaCadastrada;
+    }
 }

@@ -26,4 +26,7 @@ public abstract class Credencial extends RepresentationModel<Credencial> {
 	private Date ultimoAcesso;
 	@Column(nullable = false)
 	private boolean inativo;
+
+	public Credencial() {
+	}
 }
