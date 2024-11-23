@@ -3,10 +3,12 @@ package com.autobots.automanager.services;
 import com.autobots.automanager.adicionadores.AdicionadorLinkEmpresa;
 import com.autobots.automanager.entitades.Empresa;
 import com.autobots.automanager.repositorios.RepositorioEmpresa;
+import com.autobots.automanager.utilitarios.CadastradorEmpresa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -15,6 +17,8 @@ public class EmpresaService {
     private RepositorioEmpresa repositorioEmpresa;
     @Autowired
     private AdicionadorLinkEmpresa adicionadorLinkEmpresa;
+    @Autowired
+    private CadastradorEmpresa cadastradorEmpresa;
 
     public List<Empresa> listarEmpresas() {
         List<Empresa> empresas = repositorioEmpresa.findAll();
@@ -31,12 +35,14 @@ public class EmpresaService {
     }
 
     public void cadastrarEmpresa(Empresa empresa) {
-        repositorioEmpresa.save(empresa);
+        Empresa empresaCadastrada = cadastradorEmpresa.cadastrarEmpresa(empresa);
+        repositorioEmpresa.save(empresaCadastrada);
     }
 
     public ResponseEntity<?> atualizarEmpresa(Long id, Empresa empresa) {
         Empresa empresaAtual = repositorioEmpresa.findById(id).orElse(null);
         if (empresaAtual != null) {
+            empresaAtual.setCadastro(new Date());
             if (empresa.getRazaoSocial() != null) {
                 empresaAtual.setRazaoSocial(empresa.getRazaoSocial());
             }
@@ -75,6 +81,7 @@ public class EmpresaService {
         List<Empresa> empresas = repositorioEmpresa.findAll();
         try {
             repositorioEmpresa.findById(id).orElseThrow(() -> new IllegalArgumentException("Empresa não encontrada"));
+            repositorioEmpresa.deleteById(id);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Empresa não encontrada");
         }
