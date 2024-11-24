@@ -9,11 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import lombok.Data;
+import org.springframework.hateoas.RepresentationModel;
 
 @SuppressWarnings("serial")
 @Data
 @Entity
-public class Credencial implements Serializable{
+public class Credencial extends RepresentationModel<Credencial> implements Serializable  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

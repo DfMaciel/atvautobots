@@ -15,7 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.autobots.automanager.entidades.Credencial;
+import com.autobots.automanager.entitades.Credencial;
 import com.autobots.automanager.jwt.ProvedorJwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
