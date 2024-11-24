@@ -4,16 +4,16 @@ import com.autobots.automanager.adicionadores.AdicionadorLinkUsuario;
 import com.autobots.automanager.controllers.AtualizarUsuarioDto;
 import com.autobots.automanager.controllers.UsuarioDto;
 import com.autobots.automanager.entitades.*;
+import com.autobots.automanager.enumeracoes.PerfilUsuario;
 import com.autobots.automanager.repositorios.*;
-import com.autobots.automanager.utilitarios.AtualizadorDocumento;
-import com.autobots.automanager.utilitarios.AtualizadorEmail;
-import com.autobots.automanager.utilitarios.AtualizadorTelefone;
-import com.autobots.automanager.utilitarios.CadastradorUsuario;
+import com.autobots.automanager.utilitarios.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.Document;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,6 +46,28 @@ public class UsuarioService {
     @Autowired
     private AtualizadorEmail atualizadorEmail;
 
+    @Autowired
+    private SelecionadorUsuario selecionadorUsuario;
+
+    @Autowired
+    private VerificadorPermissao verificadorPermissao;
+
+    public List<Usuario> listarUsuarios(String username) {
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuarioLogado = selecionadorUsuario.selecionarUsername(usuarios, username);
+
+        if (usuarioLogado.getPerfis().contains(PerfilUsuario.ROLE_GERENTE)) {
+            usuarios = selecionadorUsuario.selecionarPorCargo(usuarios, PerfilUsuario.ROLE_GERENTE);
+        } else if (usuarioLogado.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
+            usuarios = selecionadorUsuario.selecionarPorCargo(usuarios, PerfilUsuario.ROLE_VENDEDOR);
+        } else if (usuarioLogado.getPerfis().contains(PerfilUsuario.ROLE_CLIENTE)) {
+            usuarios = new ArrayList<Usuario>();
+            usuarios.add(usuarioLogado);
+        }
+        adicionadorLinkUsuario.adicionarLink(usuarios);
+        return usuarios;
+    }
+
     public List<Usuario> listarUsuarios() {
         List<Usuario> usuarios = repositorioUsuario.findAll();
         adicionadorLinkUsuario.adicionarLink(usuarios);
@@ -60,12 +82,30 @@ public class UsuarioService {
         return usuario;
     }
 
-    public void cadastrarUsuario(UsuarioDto usuario) {
+    public void cadastrarUsuario(String username, UsuarioDto usuario) {
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuarioLogado = selecionadorUsuario.selecionarUsername(usuarios, username);
+
+        boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(),usuario.perfis());
+
+        if (!permissao) {
+            throw new IllegalArgumentException("Usuário sem permissão para cadastrar usuário");
+        }
+
         Usuario usuarioCadastrado = CadastradorUsuario.cadastrarUsuario(usuario);
         repositorioUsuario.save(usuarioCadastrado);
     }
 
-    public void cadastrarUsuarioEmpresa(UsuarioDto usuario, Long idEmpresa) {
+    public void cadastrarUsuarioEmpresa(UsuarioDto usuario, Long idEmpresa, String username) {
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuarioLogado = selecionadorUsuario.selecionarUsername(usuarios, username);
+
+        boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(),usuario.perfis());
+
+        if (!permissao) {
+            throw new IllegalArgumentException("Usuário sem permissão para cadastrar usuário");
+        }
+
         Empresa empresa = repositorioEmpresa.findById(idEmpresa).orElse(null);
         if (empresa == null) {
             throw new IllegalArgumentException("Empresa não encontrada");
@@ -76,11 +116,21 @@ public class UsuarioService {
         repositorioEmpresa.save(empresa);
     }
 
-    public void vincularUsuarioEmpresa(Long idUsuario, Long idEmpresa) {
+    public void vincularUsuarioEmpresa(Long idUsuario, Long idEmpresa, String username) {
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuarioLogado = selecionadorUsuario.selecionarUsername(usuarios, username);
         Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
+
         if (usuario == null) {
             throw new IllegalArgumentException("Usuário não encontrado");
         }
+
+        boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(), usuario.getPerfis());
+
+        if (!permissao) {
+            throw new IllegalArgumentException("Usuário sem permissão para cadastrar usuário");
+        }
+
         Empresa empresa = repositorioEmpresa.findById(idEmpresa).orElse(null);
         if (empresa == null) {
             throw new IllegalArgumentException("Empresa não encontrada");
@@ -89,11 +139,22 @@ public class UsuarioService {
         repositorioEmpresa.save(empresa);
     }
 
-    public void desvincularUsuarioEmpresa(Long idUsuario, Long idEmpresa) {
+    public void desvincularUsuarioEmpresa(Long idUsuario, Long idEmpresa, String username) {
+
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuarioLogado = selecionadorUsuario.selecionarUsername(usuarios, username);
         Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
+
         if (usuario == null) {
             throw new IllegalArgumentException("Usuário não encontrado");
         }
+
+        boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(), usuario.getPerfis());
+
+        if (!permissao) {
+            throw new IllegalArgumentException("Usuário sem permissão para cadastrar usuário");
+        }
+
         Empresa empresa = repositorioEmpresa.findById(idEmpresa).orElse(null);
         if (empresa == null) {
             throw new IllegalArgumentException("Empresa não encontrada");
@@ -102,9 +163,21 @@ public class UsuarioService {
         repositorioEmpresa.save(empresa);
     }
 
-    public ResponseEntity<?> atualizarUsuario(Long id, AtualizarUsuarioDto usuario) {
+    public ResponseEntity<?> atualizarUsuario(Long id, AtualizarUsuarioDto usuario, String username) {
+
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuarioLogado = selecionadorUsuario.selecionarUsername(usuarios, username);
         Usuario usuarioAtual = repositorioUsuario.findById(id).orElse(null);
+
+
         if (usuarioAtual != null) {
+
+            boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(), usuarioAtual.getPerfis());
+
+            if (!permissao) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+
             if (usuario.nome().isPresent()) {
                 usuarioAtual.setNome(usuario.nome().get());
             }
@@ -144,8 +217,8 @@ public class UsuarioService {
                     }
                 }
             }
-            if (usuario.credenciais().isPresent()) {
-                usuarioAtual.getCredenciais().addAll(usuario.credenciais().get());
+            if (usuario.credencial().isPresent()) {
+                usuarioAtual.setCredencial(usuario.credencial().get());
             }
             if (usuario.mercadorias().isPresent()) {
                 usuarioAtual.getMercadorias().addAll(usuario.mercadorias().get());
@@ -163,8 +236,18 @@ public class UsuarioService {
         }
     }
 
-    public void deletarUsuario(Long id) {
+    public void deletarUsuario(Long id, String username) {
+
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuarioLogado = selecionadorUsuario.selecionarUsername(usuarios, username);
         Usuario usuario = repositorioUsuario.findById(id).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
+        boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(), usuario.getPerfis());
+
+        if (!permissao) {
+            throw new IllegalArgumentException("Usuário sem permissão para deletar usuário");
+        }
+
         List<Venda> vendas = repositorioVenda.findAll();
         for (Venda venda : vendas) {
             if (venda.getCliente() == usuario) {
@@ -196,7 +279,7 @@ public class UsuarioService {
 
         usuario.getEmails().clear();
 
-        usuario.getCredenciais().clear();
+        usuario.setCredencial(null);
 
         usuario.getMercadorias().clear();
 

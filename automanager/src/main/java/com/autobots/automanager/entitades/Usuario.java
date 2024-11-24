@@ -31,7 +31,7 @@ public class Usuario extends RepresentationModel<Usuario>{
 	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Email> emails = new HashSet<>();
 	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<Credencial> credenciais = new HashSet<>();
+	private Credencial credencial;
 	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
 	private Set<Mercadoria> mercadorias = new HashSet<>();
 	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })

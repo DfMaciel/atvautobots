@@ -36,6 +36,7 @@ public class EmpresaController {
 
     @PostMapping("/cadastrar")
     public ResponseEntity<?> cadastrarEmpresa(@RequestBody Empresa empresa) {
+        System.out.println(empresa);
         try {
             empresaService.cadastrarEmpresa(empresa);
             return ResponseEntity.created(null).build();

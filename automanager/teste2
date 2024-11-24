@@ -1,0 +1,49 @@
+{
+  "nome": "Ana Beatriz Souza",
+  "nomeSocial": "Ana Souza",
+  "perfils": ["CLIENTE"],
+  "emails": [
+    {
+      "endereco": "ana.souza@email.com"
+    }
+  ],
+  "documentos": [
+    {
+      "numero": "12345678901",
+      "tipo": "CPF",
+      "dataEmissao": "2024-11-15T12:00:00Z"
+    }
+  ],
+  "credenciais": [
+    {
+      "nomeUsuario": "ana.souza",
+      "senha": "abcdef",
+      "inativo": false,
+      "criacao": "2024-11-15T14:30:00Z",
+      "ultimoAcesso": "2024-11-15T14:30:00Z"
+    }
+  ],
+  "endereco": {
+    "estado": "Rio de Janeiro",
+    "cidade": "Niterói",
+    "bairro": "Icaraí",
+    "rua": "Rua Dr. Silvio Raulino",
+    "numero": "100",
+    "codigoPostal": "24210-060"
+  },
+  "telefones": [
+    {
+      "ddd": "31",
+      "numero": "3456-7890"
+    },
+    {
+      "ddd": "12",
+      "numero": "99876-5432"
+    }
+  ],
+  "veiculo": {
+    "placa": "XYZ-1234",
+    "modelo": "Honda Civic",
+    "tipo": "SEDAN"
+  }
+}
