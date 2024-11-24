@@ -5,11 +5,15 @@ import com.autobots.automanager.entitades.Credencial;
 import com.autobots.automanager.entitades.Usuario;
 import com.autobots.automanager.entitades.Veiculo;
 import com.autobots.automanager.entitades.Venda;
+import com.autobots.automanager.enumeracoes.PerfilUsuario;
 import com.autobots.automanager.repositorios.RepositorioUsuario;
 import com.autobots.automanager.repositorios.RepositorioVeiculo;
 import com.autobots.automanager.repositorios.RepositorioVenda;
 import com.autobots.automanager.utilitarios.CadastradorVeiculo;
+import com.autobots.automanager.utilitarios.SelecionadorUsuario;
+import com.autobots.automanager.utilitarios.VerificadorPermissao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -35,24 +39,57 @@ public class VeiculoService {
     @Autowired
     private AdicionadorLinkVeiculo adicionadorLinkVeiculo;
 
+    @Autowired
+    private SelecionadorUsuario selecionadorUsuario;
+
+    @Autowired
+    private VerificadorPermissao verificadorPermissao;
+
     public List<Veiculo> listarVeiculos() {
         List<Veiculo> veiculos = repositorioVeiculo.findAll();
         adicionadorLinkVeiculo.adicionarLink(veiculos);
         return veiculos;
     }
 
-    public Veiculo visualizarVeiculo(Long id) {
+    public Veiculo visualizarVeiculo(Long id, String username) {
+        List<Usuario> usuarios =  repositorioUsuario.findAll();
+        Usuario usuarioSelecionado = selecionadorUsuario.selecionarUsername(usuarios, username);
         Veiculo veiculo = repositorioVeiculo.findById(id).orElse(null);
-        if (veiculo != null) {
-            adicionadorLinkVeiculo.adicionarLink(veiculo);
+        if (usuarioSelecionado == null) {
+            throw new IllegalArgumentException("Usuário não encontrado.");
         }
+        if (veiculo == null) {
+            throw new IllegalArgumentException("Veículo não encontrado.");
+        }
+        if (usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
+            if (!(veiculo.getProprietario().getPerfis().contains(PerfilUsuario.ROLE_CLIENTE))) {
+                throw new IllegalArgumentException("Usuário não tem permissão para visualizar este veículo.");
+            }
+        }
+        adicionadorLinkVeiculo.adicionarLink(veiculo);
         return veiculo;
     }
 
-    public List<Veiculo> listarVeiculosUsuario(Long idUsuario) {
+    public Veiculo visualizarVeiculo(Long id) {
+        Veiculo veiculo = repositorioVeiculo.findById(id).orElse(null);
+        if (veiculo == null) {
+            throw new IllegalArgumentException("Veículo não encontrado.");
+        }
+        adicionadorLinkVeiculo.adicionarLink(veiculo);
+        return veiculo;
+    }
+
+    public List<Veiculo> listarVeiculosUsuario(Long idUsuario, String username) {
+        List<Usuario> usuarios =  repositorioUsuario.findAll();
+        Usuario usuarioSelecionado = selecionadorUsuario.selecionarUsername(usuarios, username);
         Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuário não encontrado.");
+        }
+        if (usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
+            if (!(usuario.getPerfis().contains(PerfilUsuario.ROLE_CLIENTE))) {
+                throw new IllegalArgumentException("Usuário não tem permissão para visualizar os veículos deste usuário.");
+            }
         }
         Set<Veiculo> veiculos = usuario.getVeiculos();
         List<Veiculo> veiculosLista = new ArrayList<>(veiculos);
@@ -66,7 +103,15 @@ public class VeiculoService {
         return ResponseEntity.created(null).build();
     }
 
-    public ResponseEntity<?> atualizarVeiculo(Long veiculoId, Veiculo veiculo) {
+    public ResponseEntity<?> atualizarVeiculo(Long veiculoId, Veiculo veiculo, String username) {
+        List<Usuario> usuarios =  repositorioUsuario.findAll();
+        Usuario usuarioSelecionado = selecionadorUsuario.selecionarUsername(usuarios, username);
+        if (usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
+            if (!(veiculo.getProprietario().getPerfis().contains(PerfilUsuario.ROLE_CLIENTE))) {
+                throw new IllegalArgumentException("Usuário não tem permissão para atualizar este veículo.");
+            }
+        }
+
         Veiculo veiculoAtualizado = repositorioVeiculo.findById(veiculoId).orElse(null);
         if (veiculoAtualizado != null) {
             if (veiculo.getModelo() != null) {
@@ -91,12 +136,19 @@ public class VeiculoService {
         }
     }
 
-    public ResponseEntity<?> vincularVeiculoUsuario(Long veiculoId, Long usuarioId) {
+    public ResponseEntity<?> vincularVeiculoUsuario(Long veiculoId, Long usuarioId, String username) {
+        List<Usuario> usuarios =  repositorioUsuario.findAll();
+        Usuario usuarioSelecionado = selecionadorUsuario.selecionarUsername(usuarios, username);
         Veiculo veiculo = repositorioVeiculo.findById(veiculoId).orElse(null);
         if (veiculo != null) {
             Usuario usuario = repositorioUsuario.findById(usuarioId).orElse(null);
             if (usuario == null) {
                 return ResponseEntity.notFound().build();
+            }
+            if (usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
+                if (!(usuario.getPerfis().contains(PerfilUsuario.ROLE_CLIENTE))) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
             }
             veiculo.setProprietario(usuario);
             repositorioVeiculo.save(veiculo);
@@ -108,12 +160,19 @@ public class VeiculoService {
         }
     }
 
-    public ResponseEntity<?> desvincularVeiculoUsuario(Long veiculoId, Long usuarioId) {
+    public ResponseEntity<?> desvincularVeiculoUsuario(Long veiculoId, Long usuarioId, String username) {
+        List<Usuario> usuarios =  repositorioUsuario.findAll();
+        Usuario usuarioSelecionado = selecionadorUsuario.selecionarUsername(usuarios, username);
         Veiculo veiculo = repositorioVeiculo.findById(veiculoId).orElse(null);
         if (veiculo != null) {
             Usuario usuario = repositorioUsuario.findById(usuarioId).orElse(null);
             if (usuario == null) {
                 return ResponseEntity.notFound().build();
+            }
+            if (usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
+                if (!(usuario.getPerfis().contains(PerfilUsuario.ROLE_CLIENTE))) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
             }
             veiculo.setProprietario(null);
             repositorioVeiculo.save(veiculo);
