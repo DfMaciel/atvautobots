@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface RepositorioVenda extends JpaRepository<Venda, Long> {
     List<Venda> findByClienteId(long clienteId);
-    List<Venda> findByVendedorId(Long id);
+    List<Venda> findByFuncionarioId(Long funcionarioId);
 }

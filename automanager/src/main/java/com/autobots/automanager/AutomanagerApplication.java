@@ -257,10 +257,8 @@ public class AutomanagerApplication implements CommandLineRunner {
 
 		empresa.getVendas().add(venda2);
 
-		repositorioEmpresa.save(empresa);
-
 		Usuario admin = new Usuario();
-		admin.setNome("Admin User");
+		admin.setNome("Usuário administrador");
 		admin.setNomeSocial("Admin");
 		admin.getPerfis().add(PerfilUsuario.ROLE_ADMIN);
 

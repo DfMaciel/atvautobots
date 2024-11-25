@@ -56,7 +56,7 @@ public class VendaService {
         if (usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_ADMIN) || usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_GERENTE)) {
             vendas = repositorioVenda.findAll();
         } else if(usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
-            vendas = repositorioVenda.findByVendedorId(usuarioSelecionado.getId());
+            vendas = repositorioVenda.findByFuncionarioId(usuarioSelecionado.getId());
         } else if(usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_CLIENTE)) {
             vendas = repositorioVenda.findByClienteId(usuarioSelecionado.getId());
         }
