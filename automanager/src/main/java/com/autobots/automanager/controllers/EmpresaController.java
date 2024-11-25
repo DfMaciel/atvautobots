@@ -5,6 +5,7 @@ import com.autobots.automanager.services.EmpresaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class EmpresaController {
     @Autowired
     private EmpresaService empresaService;
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/listar")
     public ResponseEntity<List<Empresa>> listarEmpresas() {
         List<Empresa> empresas = empresaService.listarEmpresas();
@@ -25,6 +27,7 @@ public class EmpresaController {
         return ResponseEntity.ok(empresas);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/visualizar/{id}")
     public ResponseEntity<Empresa> visualizarEmpresa(@PathVariable Long id) {
         Empresa empresa = empresaService.visualizarEmpresa(id);
@@ -34,6 +37,7 @@ public class EmpresaController {
         return ResponseEntity.ok(empresa);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/cadastrar")
     public ResponseEntity<?> cadastrarEmpresa(@RequestBody Empresa empresa) {
         System.out.println(empresa);
@@ -45,12 +49,14 @@ public class EmpresaController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<?> atualizarEmpresa(@PathVariable Long id, @RequestBody Empresa empresa) {
         ResponseEntity<?> resposta = empresaService.atualizarEmpresa(id, empresa);
         return resposta;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> deletarEmpresa(@PathVariable Long id) {
         try {
