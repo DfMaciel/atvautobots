@@ -3,6 +3,7 @@ package com.autobots.automanager.services;
 import com.autobots.automanager.adicionadores.AdicionadorLinkVenda;
 import com.autobots.automanager.controllers.AtualizarVendaDto;
 import com.autobots.automanager.entitades.*;
+import com.autobots.automanager.enumeracoes.PerfilUsuario;
 import com.autobots.automanager.repositorios.RepositorioEmpresa;
 import com.autobots.automanager.repositorios.RepositorioUsuario;
 import com.autobots.automanager.repositorios.RepositorioVeiculo;
@@ -10,6 +11,7 @@ import com.autobots.automanager.repositorios.RepositorioVenda;
 import com.autobots.automanager.utilitarios.AtualizadorMercadoria;
 import com.autobots.automanager.utilitarios.AtualizadorServico;
 import com.autobots.automanager.utilitarios.CadastradorVenda;
+import com.autobots.automanager.utilitarios.SelecionadorUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,24 @@ public class VendaService {
 
     @Autowired
     private AtualizadorServico atualizadorServico;
+
+    @Autowired
+    private SelecionadorUsuario selecionadorUsuario;
+
+    public List<Venda> listarVendas(String username) {
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuarioSelecionado = selecionadorUsuario.selecionarUsername(usuarios, username);
+        List<Venda> vendas = new ArrayList<Venda>();
+        if (usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_ADMIN) || usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_GERENTE)) {
+            vendas = repositorioVenda.findAll();
+        } else if(usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
+            vendas = repositorioVenda.findByVendedorId(usuarioSelecionado.getId());
+        } else if(usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_CLIENTE)) {
+            vendas = repositorioVenda.findByClienteId(usuarioSelecionado.getId());
+        }
+        adicionadorLinkVenda.adicionarLink(vendas);
+        return vendas;
+    }
 
     public List<Venda> listarVendas() {
         List<Venda> vendas = repositorioVenda.findAll();
@@ -80,12 +100,26 @@ public class VendaService {
         return vendasLista;
     }
 
-    public void cadastrarVenda(Venda venda) {
+    public void cadastrarVenda(Venda venda, String username) {
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuario = selecionadorUsuario.selecionarUsername(usuarios, username);
+        if (usuario.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
+            if (usuario.getId().equals(venda.getFuncionario().getId())) {
+                throw new IllegalArgumentException("Usuário não autorizado");
+            }
+        }
         Venda vendaCadastrada = cadastradorVenda.cadastrarVenda(venda);
         repositorioVenda.save(vendaCadastrada);
     }
 
-    public void cadastrarVendaEmpresa(Long idEmpresa, Venda venda) {
+    public void cadastrarVendaEmpresa(Long idEmpresa, Venda venda, String username) {
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuario = selecionadorUsuario.selecionarUsername(usuarios, username);
+        if (usuario.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
+            if (usuario.getId().equals(venda.getFuncionario().getId())) {
+                throw new IllegalArgumentException("Usuário não autorizado");
+            }
+        }
         Empresa empresa = repositorioEmpresa.findById(idEmpresa).orElse(null);
         if (empresa == null) {
             throw new IllegalArgumentException("Empresa não encontrada");
@@ -95,10 +129,17 @@ public class VendaService {
         repositorioEmpresa.save(empresa);
     }
 
-    public void cadastrarVendaUsuario(Long idUsuario, Venda venda, String tipoUsuario) {
+    public void cadastrarVendaUsuario(Long idUsuario, Venda venda, String tipoUsuario, String username) {
         Usuario usuario = repositorioUsuario.findById(idUsuario).orElse(null);
         if (usuario == null) {
             throw new IllegalArgumentException("Usuário não encontrado");
+        }
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+        Usuario usuarioSelecionado = selecionadorUsuario.selecionarUsername(usuarios, username);
+        if (usuarioSelecionado.getPerfis().contains(PerfilUsuario.ROLE_VENDEDOR)) {
+            if (usuarioSelecionado.getId().equals(venda.getFuncionario().getId())) {
+                throw new IllegalArgumentException("Usuário não autorizado");
+            }
         }
         Venda vendaCadastrada = cadastradorVenda.cadastrarVenda(venda);
         if (tipoUsuario.equalsIgnoreCase("cliente")) {

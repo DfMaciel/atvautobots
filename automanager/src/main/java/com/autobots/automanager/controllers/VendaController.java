@@ -3,7 +3,10 @@ package com.autobots.automanager.controllers;
 import com.autobots.automanager.entitades.Venda;
 import com.autobots.automanager.services.VendaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +18,17 @@ public class VendaController {
     @Autowired
     private VendaService vendaService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
     @GetMapping("/listar")
+    public ResponseEntity<List<Venda>> listarVendas(Authentication authentication) {
+        String username = authentication.getName();
+        List<Venda> vendas = vendaService.listarVendas(username);
+        if (vendas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(vendas);
+    }
+
     public ResponseEntity<List<Venda>> listarVendas() {
         List<Venda> vendas = vendaService.listarVendas();
         if (vendas.isEmpty()) {
@@ -24,6 +37,7 @@ public class VendaController {
         return ResponseEntity.ok(vendas);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @GetMapping("/visualizar/{id}")
     public ResponseEntity<Venda> visualizarVenda(@PathVariable Long id) {
         Venda venda = vendaService.visualizarVenda(id);
@@ -33,6 +47,7 @@ public class VendaController {
         return ResponseEntity.ok(venda);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @GetMapping("/visualizar/empresa/{idEmpresa}")
     public ResponseEntity<List<Venda>> listarVendasEmpresa(@PathVariable Long idEmpresa) {
         List<Venda> vendas = vendaService.visualizarVendasEmpresa(idEmpresa);
@@ -42,6 +57,7 @@ public class VendaController {
         return ResponseEntity.ok(vendas);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @GetMapping("/visualizar/usuario/{idUsuario}")
     public ResponseEntity<List<Venda>> listarVendasUsuario(@PathVariable Long idUsuario) {
         List<Venda> vendas = vendaService.visualizarVendasUsuario(idUsuario);
@@ -51,36 +67,43 @@ public class VendaController {
         return ResponseEntity.ok(vendas);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarVenda(@RequestBody Venda venda) {
+    public ResponseEntity<?> cadastrarVenda(@RequestBody Venda venda, Authentication authentication) {
+        String username = authentication.getName();
         try {
-            vendaService.cadastrarVenda(venda);
+            vendaService.cadastrarVenda(venda, username);
             return ResponseEntity.created(null).build();
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PostMapping("/cadastrar/empresa/{idEmpresa}")
-    public ResponseEntity<?> cadastrarVendaEmpresa(@PathVariable Long idEmpresa, @RequestBody Venda venda) {
+    public ResponseEntity<?> cadastrarVendaEmpresa(@PathVariable Long idEmpresa, @RequestBody Venda venda, Authentication authentication) {
+        String username = authentication.getName();
         try {
-            vendaService.cadastrarVendaEmpresa(idEmpresa, venda);
+            vendaService.cadastrarVendaEmpresa(idEmpresa, venda, username);
             return ResponseEntity.created(null).build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PostMapping("/cadastrar/usuario/{idUsuario}/{tipoUsuario}")
-    public ResponseEntity<?> cadastrarVendaUsuario(@PathVariable Long idUsuario, @RequestBody Venda venda, @PathVariable String tipoUsuario) {
+    public ResponseEntity<?> cadastrarVendaUsuario(@PathVariable Long idUsuario, @RequestBody Venda venda, @PathVariable String tipoUsuario, Authentication authentication) {
+        String username = authentication.getName();
         try {
-            vendaService.cadastrarVendaUsuario(idUsuario, venda, tipoUsuario);
+            vendaService.cadastrarVendaUsuario(idUsuario, venda, tipoUsuario, username);
             return ResponseEntity.created(null).build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<?> atualizarVenda(@PathVariable Long id, @RequestBody AtualizarVendaDto venda) {
         try {
@@ -91,6 +114,7 @@ public class VendaController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @PutMapping("/vincular/{idVenda}/usuario/{idUsuario}/{tipoUsuario}")
     public ResponseEntity<?> vincularVendaUsuario(@PathVariable Long idVenda, @PathVariable Long idUsuario, @PathVariable String tipoUsuario) {
         try {
@@ -101,6 +125,7 @@ public class VendaController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @PutMapping("/vincular/{idVenda}/empresa/{idEmpresa}")
     public ResponseEntity<?> vincularVendaEmpresa(@PathVariable Long idVenda, @PathVariable Long idEmpresa) {
         try {
@@ -111,6 +136,7 @@ public class VendaController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @PutMapping("/desvincular/{idVenda}/usuario/{idUsuario}/{tipoUsuario}")
     public ResponseEntity<?> desvincularVendaUsuario(@PathVariable Long idVenda, @PathVariable Long idUsuario, @PathVariable String tipoUsuario) {
         try {
@@ -121,6 +147,7 @@ public class VendaController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @PutMapping("/desvincular/{idVenda}/empresa/{idEmpresa}")
     public ResponseEntity<?> desvincularVendaEmpresa(@PathVariable Long idVenda, @PathVariable Long idEmpresa) {
         try {
@@ -131,6 +158,7 @@ public class VendaController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> deletarVenda(@PathVariable Long id) {
         try {

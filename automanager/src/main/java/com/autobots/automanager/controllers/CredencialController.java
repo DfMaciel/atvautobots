@@ -53,6 +53,7 @@ public class CredencialController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PostMapping("/cadastrar/{idUsuario}")
     public ResponseEntity<?> cadastrarCredencial(@PathVariable Long idUsuario, @RequestBody CredencialDto credencial, Authentication authentication) {
         String username = authentication.getName();
